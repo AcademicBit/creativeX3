@@ -3,16 +3,15 @@ function obterUsuarios() {
     const usuariosLista = document.getElementById('usuarios-lista');
 
     fetch(url)
-        .then(response => response.json())  // Remove as chaves e retorna diretamente
+        .then(response => response.json())
         .then(usuarios => {
-            // Para cada usuário, cria um elemento na lista
             usuarios.forEach(usuario => {
                 const li = document.createElement('li');
                 li.classList.add('usuario-item');
                 li.innerHTML = `
-                    <h3>${usuario.id}</h3>
-                    <p>${usuario.name}</p>
-                    <p>${usuario.email}</p>
+                    <h3>ID: ${usuario.id}</h3>
+                    <p>Nome: ${usuario.name}</p>
+                    <p>E-mail: ${usuario.email}</p>
                 `;
                 usuariosLista.appendChild(li);
             });
@@ -21,6 +20,4 @@ function obterUsuarios() {
             console.error('Erro ao obter usuários:', error);
         });
 }
-
-// Executa quando o documento estiver carregado
-document.addEventListener('DOMContentLoaded', obterUsuarios);
+obterUsuarios();

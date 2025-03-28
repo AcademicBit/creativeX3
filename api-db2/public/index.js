@@ -85,17 +85,14 @@ function editarUsuario(event) {
         });
     })
     .then(data => {
-        alert(data.message || 'Usuário atualizado com sucesso!');
         document.getElementById('modalEdit').style.display = "none";
         obterUsuarios(); // Atualiza a lista
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao atualizar usuário: ' + error.message);
     });
 }
 
-// Função para criar novo usuário
 function criarUsuario(event) {
     event.preventDefault();
     
@@ -125,9 +122,7 @@ function criarUsuario(event) {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        console.log('2. Status da resposta:', response.status);
         return response.json().then(data => {
-            console.log('3. Dados da resposta:', data);
             if (!response.ok) {
                 throw new Error(data.error || data.details || data.sqlMessage || 'Erro ao criar usuário');
             }
@@ -135,19 +130,15 @@ function criarUsuario(event) {
         });
     })
     .then(data => {
-        console.log('4. Sucesso:', data);
-        alert(data.message || 'Usuário criado com sucesso!');
         document.getElementById('modalCreate').style.display = "none";
         document.getElementById('formCreateUser').reset();
         obterUsuarios();
     })
     .catch(error => {
         console.error('5. Erro completo:', error);
-        alert('Erro ao criar usuário: ' + error.message);
     });
 }
 
-// Event Listeners
 document.querySelector('.close').addEventListener('click', () => {
     document.getElementById('modal').style.display = "none";
 });
@@ -184,9 +175,7 @@ window.addEventListener('click', (event) => {
 });
 
 function confirmarDeletar(userId) {
-    if (confirm('Tem certeza que deseja deletar este usuário?')) {
-        deletarUsuario(userId);
-    }
+    deletarUsuario(userId);
 }
 
 function deletarUsuario(userId) {
@@ -205,12 +194,10 @@ function deletarUsuario(userId) {
         });
     })
     .then(data => {
-        alert(data.message || 'Usuário deletado com sucesso!');
         obterUsuarios(); // Atualiza a lista
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao deletar usuário: ' + error.message);
     });
 }
 

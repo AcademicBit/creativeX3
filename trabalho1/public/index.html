@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserStack</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link active">Usuários</a>
+            <a href="actions.html" class="nav-link">Ações</a>
+            <a href="events.html" class="nav-link">Eventos</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>UserStack</h1>
+        </div>
+
+        <div class="cards" id="cards">
+            <!-- Os cards serão inseridos aqui via JavaScript -->
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Detalhes do Usuário</h2>
+            <div id="modal-details"></div>
+        </div>
+    </div>
+
+    <div id="modalCreate" class="modal">
+        <div class="modal-content">
+            <span class="close-create">&times;</span>
+            <h2>Novo Usuário</h2>
+            <form id="formCreateUser">
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone: (opcional)</label>
+                    <input type="tel" id="telefone" name="telefone">
+                </div>
+                <div class="form-group">
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" required>
+                </div>
+                <button type="submit" class="btn-submit">Criar Usuário</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalEdit" class="modal">
+        <div class="modal-content">
+            <span class="close-edit">&times;</span>
+            <h2>Editar Usuário</h2>
+            <form id="formEditUser">
+                <div class="form-group">
+                    <label for="editNome">Nome:</label>
+                    <input type="text" id="editNome" name="editNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTelefone">Telefone: (opcional)</label>
+                    <input type="tel" id="editTelefone" name="editTelefone">
+                </div>
+                <div class="form-group">
+                    <label for="editCpf">CPF:</label>
+                    <input type="text" id="editCpf" name="editCpf" required>
+                </div>
+                <button type="submit" class="btn-submit">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

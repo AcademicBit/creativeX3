@@ -1,30 +1,22 @@
 function obterUsuarios() {
-    const url = "http://localhost:8800/usuarios";
-    const usuariosLista = document.getElementById('usuarios-lista');
+    const url = "http://localhost:8800/api/usuarios";
+    const cards = document.getElementById('cards');
 
     fetch(url)
         .then(response => response.json())
         .then(usuarios => {
-            usuariosLista.innerHTML = '';
+            cards.innerHTML = '';
             usuarios.forEach(usuario => {
-                const li = document.createElement('li');
-                li.classList.add('usuario-item');
-                li.innerHTML = `
-                    <div class="usuario-content" onclick="mostrarDetalhesUsuario(${JSON.stringify(usuario).replace(/"/g, '&quot;')})">
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <div class="card-content">
                         <h3>ID: ${usuario.idusuarios}</h3>
                         <p>Nome: ${usuario.nome}</p>
                         <p>CPF: ${usuario.cpf}</p>
                     </div>
-                    <div class="actions-container">
-                        <button class="btn-edit" onclick="mostrarModalEditar(${JSON.stringify(usuario).replace(/"/g, '&quot;')})">
-                            Editar
-                        </button>
-                        <button class="btn-delete" onclick="confirmarDeletar(${usuario.idusuarios})">
-                            Deletar
-                        </button>
-                    </div>
                 `;
-                usuariosLista.appendChild(li);
+                cards.appendChild(card);
             });
         })
         .catch(error => {
@@ -69,7 +61,7 @@ function editarUsuario(event) {
         cpf: document.getElementById('editCpf').value
     };
 
-    fetch(`http://localhost:8800/usuarios/${userId}`, {
+    fetch(`http://localhost:8800/api/usuarios/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -90,6 +82,7 @@ function editarUsuario(event) {
     })
     .catch(error => {
         console.error('Erro:', error);
+        alert('Erro ao atualizar usuário: ' + error.message);
     });
 }
 
@@ -100,7 +93,6 @@ function criarUsuario(event) {
     const telefone = document.getElementById('telefone').value.trim();
     const cpf = document.getElementById('cpf').value.trim();
 
-    // Validação dos campos obrigatórios
     if (!nome || !cpf) {
         alert('Por favor, preencha o nome e o CPF!');
         return;
@@ -108,13 +100,11 @@ function criarUsuario(event) {
 
     const formData = { 
         nome, 
-        telefone: telefone || null,  // Se telefone estiver vazio, envia null
+        telefone: telefone || null,
         cpf 
     };
 
-    console.log('1. Enviando dados:', formData);
-
-    fetch('http://localhost:8800/usuarios', {
+    fetch('http://localhost:8800/api/usuarios', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -135,51 +125,13 @@ function criarUsuario(event) {
         obterUsuarios();
     })
     .catch(error => {
-        console.error('5. Erro completo:', error);
+        console.error('Erro:', error);
+        alert('Erro ao criar usuário: ' + error.message);
     });
 }
 
-document.querySelector('.close').addEventListener('click', () => {
-    document.getElementById('modal').style.display = "none";
-});
-
-document.querySelector('.close-create').addEventListener('click', () => {
-    document.getElementById('modalCreate').style.display = "none";
-});
-
-document.querySelector('.close-edit').addEventListener('click', () => {
-    document.getElementById('modalEdit').style.display = "none";
-});
-
-document.getElementById('btnAddUser').addEventListener('click', () => {
-    document.getElementById('modalCreate').style.display = "block";
-});
-
-document.getElementById('formCreateUser').addEventListener('submit', criarUsuario);
-document.getElementById('formEditUser').addEventListener('submit', editarUsuario);
-
-window.addEventListener('click', (event) => {
-    const modal = document.getElementById('modal');
-    const modalCreate = document.getElementById('modalCreate');
-    const modalEdit = document.getElementById('modalEdit');
-    
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-    if (event.target === modalCreate) {
-        modalCreate.style.display = "none";
-    }
-    if (event.target === modalEdit) {
-        modalEdit.style.display = "none";
-    }
-});
-
-function confirmarDeletar(userId) {
-    deletarUsuario(userId);
-}
-
 function deletarUsuario(userId) {
-    fetch(`http://localhost:8800/usuarios/${userId}`, {
+    fetch(`http://localhost:8800/api/usuarios/${userId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -194,11 +146,75 @@ function deletarUsuario(userId) {
         });
     })
     .then(data => {
-        obterUsuarios(); // Atualiza a lista
+        obterUsuarios();
     })
     .catch(error => {
         console.error('Erro:', error);
+        alert('Erro ao deletar usuário: ' + error.message);
     });
 }
 
-obterUsuarios();
+function confirmarDeletar(userId) {
+    // Você pode colocar uma confirmação antes de deletar, se desejar
+    deletarUsuario(userId);
+}
+
+// Registra os event listeners e executa as funções após o carregamento do DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Registrando listeners para fechar os modais, se os botões existirem
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            document.getElementById('modal').style.display = "none";
+        });
+    }
+    
+    const closeCreateBtn = document.querySelector('.close-create');
+    if (closeCreateBtn) {
+        closeCreateBtn.addEventListener('click', () => {
+            document.getElementById('modalCreate').style.display = "none";
+        });
+    }
+    
+    const closeEditBtn = document.querySelector('.close-edit');
+    if (closeEditBtn) {
+        closeEditBtn.addEventListener('click', () => {
+            document.getElementById('modalEdit').style.display = "none";
+        });
+    }
+
+    // Removido o listener para 'btnAddUser' pois o botão não existe
+    // Caso decida exibir o modalCreate automaticamente, pode chamar:
+    // document.getElementById('modalCreate').style.display = "block";
+
+    // Eventos dos formulários
+    const formCreateUser = document.getElementById('formCreateUser');
+    if (formCreateUser) {
+        formCreateUser.addEventListener('submit', criarUsuario);
+    }
+    
+    const formEditUser = document.getElementById('formEditUser');
+    if (formEditUser) {
+        formEditUser.addEventListener('submit', editarUsuario);
+    }
+
+    // Fecha os modais ao clicar fora deles
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('modal');
+        const modalCreate = document.getElementById('modalCreate');
+        const modalEdit = document.getElementById('modalEdit');
+        
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+        if (event.target === modalCreate) {
+            modalCreate.style.display = "none";
+        }
+        if (event.target === modalEdit) {
+            modalEdit.style.display = "none";
+        }
+    });
+
+    // Executa imediatamente a função para buscar os usuários
+    obterUsuarios();
+});

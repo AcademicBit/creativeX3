@@ -16,6 +16,10 @@ function obterUsuarios() {
                         <p>CPF: ${usuario.cpf}</p>
                     </div>
                 `;
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => {
+                    window.location.href = `/usuario.html?id=${usuario.idusuarios}`;
+                });
                 cards.appendChild(card);
             });
         })

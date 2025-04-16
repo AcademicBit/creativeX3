@@ -19,22 +19,18 @@ let usuarioParaExcluir = null;
 
 // Funções auxiliares
 function showModal(modal) {
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
 function hideModal(modal) {
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
 }
 
 function hideAllModals() {
     [modalCadastro, modalListaEditar, modalEditar, modalListaExcluir, modalConfirmarExclusao].forEach(modal => {
-        if (modal) hideModal(modal);
+        hideModal(modal);
     });
 }
 
@@ -45,19 +41,17 @@ async function carregarUsuarios(containerId) {
         const usuarios = await response.json();
         const container = document.getElementById(containerId);
         
-        if (container) {
-            container.innerHTML = usuarios.map(usuario => `
-                <div class="user-item" data-id="${usuario.id}">
-                    <div class="user-info">
-                        <h3>${usuario.nome || ''}</h3>
-                        <div class="user-details">
-                            <p><strong>CPF:</strong> ${usuario.cpf || ''}</p>
-                            <p><strong>Telefone:</strong> ${usuario.telefone || 'Não informado'}</p>
-                        </div>
+        container.innerHTML = usuarios.map(usuario => `
+            <div class="user-item" data-id="${usuario.idusuarios}">
+                <div class="user-info">
+                    <h3>${usuario.nome || ''}</h3>
+                    <div class="user-details">
+                        <p><strong>CPF:</strong> ${usuario.cpf || ''}</p>
+                        <p><strong>Telefone:</strong> ${usuario.telefone || 'Não informado'}</p>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
         
         return usuarios;
     } catch (error) {
@@ -67,168 +61,135 @@ async function carregarUsuarios(containerId) {
 }
 
 // Event Listeners para os botões principais
-if (btnCadastrar) {
-    btnCadastrar.addEventListener('click', (e) => {
-        e.preventDefault();
-        showModal(modalCadastro);
-    });
-}
+btnCadastrar.addEventListener('click', (e) => {
+    e.preventDefault();
+    showModal(modalCadastro);
+});
 
-if (btnEditar) {
-    btnEditar.addEventListener('click', async (e) => {
-        e.preventDefault();
-        await carregarUsuarios('listaUsuariosEditar');
-        showModal(modalListaEditar);
-    });
-}
+btnEditar.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await carregarUsuarios('listaUsuariosEditar');
+    showModal(modalListaEditar);
+});
 
-if (btnExcluir) {
-    btnExcluir.addEventListener('click', async (e) => {
-        e.preventDefault();
-        await carregarUsuarios('listaUsuariosExcluir');
-        showModal(modalListaExcluir);
-    });
-}
+btnExcluir.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await carregarUsuarios('listaUsuariosExcluir');
+    showModal(modalListaExcluir);
+});
 
 // Event Listener para o formulário de cadastro
-if (formCadastro) {
-    formCadastro.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(formCadastro);
-        const dados = Object.fromEntries(formData.entries());
+formCadastro.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formCadastro);
+    const dados = Object.fromEntries(formData.entries());
 
-        try {
-            const response = await fetch('/api/usuarios', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
+    try {
+        const response = await fetch('/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
 
-            if (response.ok) {
-                hideModal(modalCadastro);
-                formCadastro.reset();
-                await carregarUsuarios('listaUsuariosEditar');
-                await carregarUsuarios('listaUsuariosExcluir');
-            }
-        } catch (error) {
-            console.error('Erro ao cadastrar usuário:', error);
+        if (response.ok) {
+            hideModal(modalCadastro);
+            formCadastro.reset();
+            // Aqui você pode adicionar uma notificação de sucesso
         }
-    });
-}
+    } catch (error) {
+        console.error('Erro ao cadastrar usuário:', error);
+        // Aqui você pode adicionar uma notificação de erro
+    }
+});
 
 // Event Listener para seleção de usuário para edição
-const listaUsuariosEditar = document.getElementById('listaUsuariosEditar');
-if (listaUsuariosEditar) {
-    listaUsuariosEditar.addEventListener('click', (e) => {
-        const userItem = e.target.closest('.user-item');
-        if (!userItem) return;
+document.getElementById('listaUsuariosEditar').addEventListener('click', async (e) => {
+    const userItem = e.target.closest('.user-item');
+    if (!userItem) return;
 
-        const nome = userItem.querySelector('h3')?.textContent?.trim() || '';
-        const cpfElement = userItem.querySelector('p strong')?.nextSibling;
-        const cpf = cpfElement ? cpfElement.textContent.trim() : '';
-        const telefoneElement = userItem.querySelectorAll('p')[1];
-        const telefone = telefoneElement ? 
-            (telefoneElement.textContent.includes('Não informado') ? '' : telefoneElement.textContent.split(':')[1]?.trim() || '') 
-            : '';
-        const userId = parseInt(userItem.dataset.id, 10);
+    // Pegando os dados que já estão visíveis na lista
+    const nome = userItem.querySelector('h3').textContent;
+    const cpf = userItem.querySelector('p:nth-child(1)').textContent.replace('CPF: ', '');
+    const telefone = userItem.querySelector('p:nth-child(2)').textContent.replace('Telefone: ', '');
 
-        if (!userId || isNaN(userId)) {
-            console.error('ID do usuário inválido');
-            return;
-        }
+    // Preenchendo o formulário com os dados existentes
+    document.getElementById('editId').value = userItem.dataset.id;
+    document.getElementById('editNome').value = nome;
+    document.getElementById('editCpf').value = cpf;
+    document.getElementById('editTelefone').value = telefone === 'Não informado' ? '' : telefone;
 
-        // Preenchendo o formulário com os dados existentes
-        document.getElementById('editId').value = userId;
-        document.getElementById('editNome').value = nome;
-        document.getElementById('editCpf').value = cpf;
-        document.getElementById('editTelefone').value = telefone;
-
-        hideModal(modalListaEditar);
-        showModal(modalEditar);
-    });
-}
+    hideModal(modalListaEditar);
+    showModal(modalEditar);
+});
 
 // Event Listener para o formulário de edição
-if (formEditar) {
-    formEditar.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userId = parseInt(document.getElementById('editId').value, 10);
-        
-        if (!userId || isNaN(userId)) {
-            console.error('ID do usuário inválido');
-            return;
+formEditar.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = document.getElementById('editId').value;
+    const formData = new FormData(formEditar);
+    
+    // Criando objeto com os dados do formulário, removendo campos vazios
+    const dados = {};
+    for (const [key, value] of formData.entries()) {
+        if (value.trim() !== '') {
+            // Remove 'edit' do início do nome do campo
+            const fieldName = key.replace('edit', '').toLowerCase();
+            dados[fieldName] = value;
         }
+    }
 
-        const formData = new FormData(formEditar);
-        const dados = {};
-        
-        for (const [key, value] of formData.entries()) {
-            if (value.trim() !== '') {
-                const fieldName = key.replace('edit', '').toLowerCase();
-                dados[fieldName] = value.trim();
-            }
+    try {
+        const response = await fetch(`/api/usuarios/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
+
+        if (response.ok) {
+            hideModal(modalEditar);
+            formEditar.reset();
+            // Recarregar a lista de usuários após edição bem-sucedida
+            await carregarUsuarios('listaUsuariosEditar');
+            await carregarUsuarios('listaUsuariosExcluir');
         }
-
-        try {
-            const response = await fetch(`/api/usuarios/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dados)
-            });
-
-            if (response.ok) {
-                hideModal(modalEditar);
-                formEditar.reset();
-                await carregarUsuarios('listaUsuariosEditar');
-                await carregarUsuarios('listaUsuariosExcluir');
-            } else {
-                console.error('Erro ao atualizar usuário:', await response.text());
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar usuário:', error);
-        }
-    });
-}
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+    }
+});
 
 // Event Listener para seleção de usuário para exclusão
-const listaUsuariosExcluir = document.getElementById('listaUsuariosExcluir');
-if (listaUsuariosExcluir) {
-    listaUsuariosExcluir.addEventListener('click', (e) => {
-        const userItem = e.target.closest('.user-item');
-        if (!userItem) return;
+document.getElementById('listaUsuariosExcluir').addEventListener('click', (e) => {
+    const userItem = e.target.closest('.user-item');
+    if (!userItem) return;
 
-        usuarioParaExcluir = userItem.dataset.id;
-        hideModal(modalListaExcluir);
-        showModal(modalConfirmarExclusao);
-    });
-}
+    usuarioParaExcluir = userItem.dataset.id;
+    hideModal(modalListaExcluir);
+    showModal(modalConfirmarExclusao);
+});
 
 // Event Listener para confirmação de exclusão
-const btnConfirmarExclusao = document.getElementById('btnConfirmarExclusao');
-if (btnConfirmarExclusao) {
-    btnConfirmarExclusao.addEventListener('click', async () => {
-        if (!usuarioParaExcluir) return;
+document.getElementById('btnConfirmarExclusao').addEventListener('click', async () => {
+    if (!usuarioParaExcluir) return;
 
-        try {
-            const response = await fetch(`/api/usuarios/${usuarioParaExcluir}`, {
-                method: 'DELETE'
-            });
+    try {
+        const response = await fetch(`/api/usuarios/${usuarioParaExcluir}`, {
+            method: 'DELETE'
+        });
 
-            if (response.ok) {
-                hideModal(modalConfirmarExclusao);
-                usuarioParaExcluir = null;
-                await carregarUsuarios('listaUsuariosEditar');
-                await carregarUsuarios('listaUsuariosExcluir');
-            }
-        } catch (error) {
-            console.error('Erro ao excluir usuário:', error);
+        if (response.ok) {
+            hideModal(modalConfirmarExclusao);
+            usuarioParaExcluir = null;
+            // Aqui você pode adicionar uma notificação de sucesso
         }
-    });
-}
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        // Aqui você pode adicionar uma notificação de erro
+    }
+});
 
 // Event Listeners para fechar modais
 document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {

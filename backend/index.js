@@ -10,13 +10,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rotas
 app.get("/usuarios", getUsers);
 app.get("/usuarios/:id", getUserById);
 app.post("/usuarios", createUser);
 app.put("/usuarios/:id", updateUser);
 app.delete("/usuarios/:id", deleteUser);
 
-app.listen(8800, () => {
-    console.log("API rodando na porta 8800");
-}); 
+app.listen(8800); 

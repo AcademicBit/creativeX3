@@ -1,8 +1,8 @@
 import { db } from "../config/db.js";
 
 export const createUser = (req, res) => {
-  const q = "INSERT INTO usuarios (nome, telefone, cpf) VALUES (?, ?, ?)";
-  const values = [req.body.nome, req.body.telefone, req.body.cpf];
+  const q = "INSERT INTO usuarios (nome, trabalho, telefone, cidade) VALUES (?, ?, ?, ?)";
+  const values = [req.body.nome, req.body.trabalho, req.body.telefone, req.body.cidade];
 
   db.query(q, values, (err, data) => {
     if (err) {

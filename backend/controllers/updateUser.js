@@ -1,8 +1,8 @@
 import { db } from "../config/db.js";
 
 export const updateUser = (req, res) => {
-  const q = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ? WHERE idUsuarios = ?";
-  const values = [req.body.nome, req.body.telefone, req.body.cpf, req.params.id];
+  const q = "UPDATE usuarios SET nome = ?, trabalho = ?, telefone = ?, cidade = ? WHERE id = ?";
+  const values = [req.body.nome, req.body.trabalho, req.body.telefone, req.body.cidade, req.params.id];
 
   db.query(q, values, (err, data) => {
     if (err) {

@@ -1,7 +1,7 @@
 import { db } from "../config/db.js";
 
 export const getUserById = (req, res) => {
-  const q = "SELECT * FROM usuarios WHERE idusuarios = ?";
+  const q = "SELECT * FROM usuarios WHERE id = ?";
   const userId = req.params.id;
 
   if (!userId) {

@@ -1,7 +1,7 @@
 import { db } from "../config/db.js";
 
 export const deleteUser = (req, res) => {
-  const q = "DELETE FROM usuarios WHERE idUsuarios = ?";
+  const q = "DELETE FROM usuarios WHERE id = ?";
   const userId = req.params.id;
 
   if (!userId) {

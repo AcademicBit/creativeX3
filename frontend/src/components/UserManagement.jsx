@@ -1,0 +1,680 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Grid,
+  Box,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import '../styles/styles.css';
+
+const UserManagement = () => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formData, setFormData] = useState({
+    nome: '',
+    telefone: '',
+    cpf: ''
+  });
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:8800/usuarios');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8800/usuarios', formData);
+      setIsCreateModalOpen(false);
+      setFormData({
+        nome: '',
+        telefone: '',
+        cpf: ''
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+    }
+  };
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    if (!selectedUser?.idusuarios) {
+      console.error('ID do usuário não encontrado');
+      return;
+    }
+    try {
+      await axios.put(`http://localhost:8800/usuarios/${selectedUser.idusuarios}`, formData);
+      setIsUpdateModalOpen(false);
+      setSelectedUser(null);
+      setFormData({
+        nome: '',
+        telefone: '',
+        cpf: ''
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser?.idusuarios) {
+      console.error('ID do usuário não encontrado');
+      return;
+    }
+    try {
+      await axios.delete(`http://localhost:8800/usuarios/${selectedUser.idusuarios}`);
+      setIsDeleteModalOpen(false);
+      setSelectedUser(null);
+      fetchUsers();
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+    }
+  };
+
+  const selectUserForUpdate = (user) => {
+    if (!user?.idusuarios) {
+      console.error('ID do usuário não encontrado');
+      return;
+    }
+    setSelectedUser(user);
+    setFormData({
+      nome: user.nome || '',
+      telefone: user.telefone || '',
+      cpf: user.cpf || ''
+    });
+    setIsUpdateModalOpen(true);
+  };
+
+  const selectUserForDelete = (user) => {
+    if (!user?.idusuarios) {
+      console.error('ID do usuário não encontrado');
+      return;
+    }
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const modalStyle = {
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      backdropFilter: 'blur(5px)',
+      zIndex: 1000,
+      display: 'none',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    modal: {
+      backgroundColor: '#262626',
+      borderRadius: '12px',
+      padding: '30px',
+      width: '95%',
+      maxWidth: '700px',
+      maxHeight: '80vh',
+      position: 'relative',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '20px',
+      borderBottom: '1px solid #333',
+      paddingBottom: '15px',
+      flex: '0 0 auto'
+    },
+    title: {
+      color: '#ff8c00',
+      margin: 0,
+      fontSize: '1.5em'
+    },
+    closeButton: {
+      background: 'none',
+      border: 'none',
+      color: '#fff',
+      fontSize: '24px',
+      cursor: 'pointer',
+      padding: '5px',
+      transition: 'color 0.2s ease'
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
+      flex: '1 1 auto',
+      overflowY: 'auto'
+    },
+    formGroup: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px'
+    },
+    label: {
+      color: '#fff',
+      fontSize: '0.9em'
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      backgroundColor: '#333',
+      border: '1px solid #444',
+      borderRadius: '6px',
+      color: '#fff',
+      fontSize: '1em',
+      transition: 'all 0.2s ease',
+      outline: 'none'
+    },
+    buttonGroup: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '10px',
+      marginTop: '20px',
+      flex: '0 0 auto'
+    },
+    button: {
+      padding: '12px 24px',
+      borderRadius: '6px',
+      border: 'none',
+      fontSize: '0.9em',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease'
+    },
+    cancelButton: {
+      backgroundColor: '#404040',
+      color: '#fff'
+    },
+    submitButton: {
+      backgroundColor: '#ff8c00',
+      color: '#000'
+    },
+    userList: {
+      flex: '1 1 auto',
+      overflowY: 'auto',
+      maxHeight: 'calc(80vh - 150px)',
+      padding: '10px'
+    },
+    userItem: {
+      background: '#333',
+      padding: '20px',
+      marginBottom: '15px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      border: '1px solid transparent',
+      display: 'block',
+      textDecoration: 'none'
+    },
+    userInfo: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px',
+      pointerEvents: 'none'
+    },
+    userTitle: {
+      color: '#fff',
+      margin: 0,
+      fontSize: '1.2em',
+      borderBottom: '1px solid #404040',
+      paddingBottom: '8px',
+      pointerEvents: 'none'
+    },
+    userDetails: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      pointerEvents: 'none'
+    },
+    userDetail: {
+      color: '#ccc',
+      margin: 0,
+      fontSize: '1em',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      pointerEvents: 'none'
+    },
+    userLabel: {
+      color: '#ff8c00',
+      minWidth: '80px',
+      pointerEvents: 'none'
+    },
+    confirmContent: {
+      padding: '20px 0',
+      flex: '1 1 auto'
+    },
+    confirmText: {
+      color: '#fff',
+      fontSize: '1.1em',
+      textAlign: 'center',
+      marginBottom: '20px'
+    }
+  };
+
+  return (
+    <Box 
+      sx={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        backgroundColor: '#000'
+      }}
+    >
+      <Grid 
+        container 
+        spacing={3} 
+        justifyContent="center" 
+        alignItems="center" 
+        sx={{ 
+          width: 'auto',
+          margin: 0,
+          maxWidth: '800px'
+        }}
+      >
+        <Grid item>
+          <div className="card" onClick={() => setIsCreateModalOpen(true)} style={{ width: '240px', height: '240px' }}>
+            <div className="card-content">
+              <h3>Cadastrar</h3>
+              <AddIcon sx={{ fontSize: 50, color: '#ff8c00', marginTop: '20px' }} />
+            </div>
+          </div>
+        </Grid>
+        <Grid item>
+          <div className="card" onClick={() => setIsUpdateModalOpen(true)} style={{ width: '240px', height: '240px' }}>
+            <div className="card-content">
+              <h3>Editar</h3>
+              <EditIcon sx={{ fontSize: 50, color: '#ff8c00', marginTop: '20px' }} />
+            </div>
+          </div>
+        </Grid>
+        <Grid item>
+          <div className="card" onClick={() => setIsDeleteModalOpen(true)} style={{ width: '240px', height: '240px' }}>
+            <div className="card-content">
+              <h3>Excluir</h3>
+              <DeleteIcon sx={{ fontSize: 50, color: '#ff8c00', marginTop: '20px' }} />
+            </div>
+          </div>
+        </Grid>
+      </Grid>
+
+      {/* Modal de Cadastro */}
+      <div 
+        className={`modal-overlay ${isCreateModalOpen ? 'visible' : ''}`} 
+        style={{
+          ...modalStyle.overlay, 
+          display: isCreateModalOpen ? 'flex' : 'none'
+        }}
+      >
+        <div style={modalStyle.modal}>
+          <div style={modalStyle.header}>
+            <h2 style={modalStyle.title}>Cadastrar Novo Usuário</h2>
+            <button 
+              style={modalStyle.closeButton}
+              onClick={() => setIsCreateModalOpen(false)}
+              onMouseOver={(e) => e.target.style.color = '#ff8c00'}
+              onMouseOut={(e) => e.target.style.color = '#fff'}
+            >
+              ×
+            </button>
+          </div>
+          <form onSubmit={handleCreateUser} style={modalStyle.form}>
+            <div style={modalStyle.formGroup}>
+              <label style={modalStyle.label}>Nome:</label>
+              <input
+                style={modalStyle.input}
+                type="text"
+                name="nome"
+                value={formData.nome}
+                onChange={handleInputChange}
+                required
+                onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                onBlur={(e) => e.target.style.borderColor = '#444'}
+              />
+            </div>
+            <div style={modalStyle.formGroup}>
+              <label style={modalStyle.label}>Telefone:</label>
+              <input
+                style={modalStyle.input}
+                type="text"
+                name="telefone"
+                value={formData.telefone}
+                onChange={handleInputChange}
+                required
+                onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                onBlur={(e) => e.target.style.borderColor = '#444'}
+              />
+            </div>
+            <div style={modalStyle.formGroup}>
+              <label style={modalStyle.label}>CPF:</label>
+              <input
+                style={modalStyle.input}
+                type="text"
+                name="cpf"
+                value={formData.cpf}
+                onChange={handleInputChange}
+                required
+                onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                onBlur={(e) => e.target.style.borderColor = '#444'}
+              />
+            </div>
+            <div style={modalStyle.buttonGroup}>
+              <button
+                type="button"
+                style={{...modalStyle.button, ...modalStyle.cancelButton}}
+                onClick={() => setIsCreateModalOpen(false)}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#505050'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#404040'}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                style={{...modalStyle.button, ...modalStyle.submitButton}}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#ffa500'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#ff8c00'}
+              >
+                Cadastrar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Modal de Seleção para Edição */}
+      <div 
+        className={`modal-overlay ${isUpdateModalOpen && !selectedUser ? 'visible' : ''}`} 
+        style={{
+          ...modalStyle.overlay, 
+          display: isUpdateModalOpen && !selectedUser ? 'flex' : 'none'
+        }}
+      >
+        <div style={modalStyle.modal}>
+          <div style={modalStyle.header}>
+            <h2 style={modalStyle.title}>Selecione um usuário para editar</h2>
+            <button 
+              style={modalStyle.closeButton}
+              onClick={() => setIsUpdateModalOpen(false)}
+              onMouseOver={(e) => e.target.style.color = '#ff8c00'}
+              onMouseOut={(e) => e.target.style.color = '#fff'}
+            >
+              ×
+            </button>
+          </div>
+          <div style={modalStyle.userList}>
+            {users.map(user => (
+              <div 
+                key={user.idusuarios}
+                style={modalStyle.userItem}
+                onClick={() => selectUserForUpdate(user)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#404040';
+                  e.currentTarget.style.transform = 'translateX(5px)';
+                  e.currentTarget.style.borderColor = '#ff8c00';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#333';
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.borderColor = 'transparent';
+                }}
+              >
+                <div style={modalStyle.userInfo}>
+                  <h3 style={modalStyle.userTitle}>{user.nome}</h3>
+                  <div style={modalStyle.userDetails}>
+                    <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>Telefone:</strong>
+                      {user.telefone}
+                    </p>
+                    <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>CPF:</strong>
+                      {user.cpf}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal de Edição */}
+      {selectedUser && (
+        <div 
+          className={`modal-overlay ${isUpdateModalOpen ? 'visible' : ''}`} 
+          style={{
+            ...modalStyle.overlay, 
+            display: isUpdateModalOpen ? 'flex' : 'none'
+          }}
+        >
+          <div style={modalStyle.modal}>
+            <div style={modalStyle.header}>
+              <h2 style={modalStyle.title}>Editar Usuário</h2>
+              <button 
+                style={modalStyle.closeButton}
+                onClick={() => {
+                  setIsUpdateModalOpen(false);
+                  setSelectedUser(null);
+                }}
+                onMouseOver={(e) => e.target.style.color = '#ff8c00'}
+                onMouseOut={(e) => e.target.style.color = '#fff'}
+              >
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleUpdateUser} style={modalStyle.form}>
+              <div style={modalStyle.formGroup}>
+                <label style={modalStyle.label}>Nome:</label>
+                <input
+                  style={modalStyle.input}
+                  type="text"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleInputChange}
+                  required
+                  onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                />
+              </div>
+              <div style={modalStyle.formGroup}>
+                <label style={modalStyle.label}>Telefone:</label>
+                <input
+                  style={modalStyle.input}
+                  type="text"
+                  name="telefone"
+                  value={formData.telefone}
+                  onChange={handleInputChange}
+                  required
+                  onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                />
+              </div>
+              <div style={modalStyle.formGroup}>
+                <label style={modalStyle.label}>CPF:</label>
+                <input
+                  style={modalStyle.input}
+                  type="text"
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleInputChange}
+                  required
+                  onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                />
+              </div>
+              <div style={modalStyle.buttonGroup}>
+                <button
+                  type="button"
+                  style={{...modalStyle.button, ...modalStyle.cancelButton}}
+                  onClick={() => {
+                    setIsUpdateModalOpen(false);
+                    setSelectedUser(null);
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#505050'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#404040'}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  style={{...modalStyle.button, ...modalStyle.submitButton}}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#ffa500'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#ff8c00'}
+                >
+                  Atualizar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Seleção para Exclusão */}
+      <div 
+        className={`modal-overlay ${isDeleteModalOpen && !selectedUser ? 'visible' : ''}`} 
+        style={{
+          ...modalStyle.overlay, 
+          display: isDeleteModalOpen && !selectedUser ? 'flex' : 'none'
+        }}
+      >
+        <div style={modalStyle.modal}>
+          <div style={modalStyle.header}>
+            <h2 style={modalStyle.title}>Selecione um usuário para excluir</h2>
+            <button 
+              style={modalStyle.closeButton}
+              onClick={() => setIsDeleteModalOpen(false)}
+              onMouseOver={(e) => e.target.style.color = '#ff8c00'}
+              onMouseOut={(e) => e.target.style.color = '#fff'}
+            >
+              ×
+            </button>
+          </div>
+          <div style={modalStyle.userList}>
+            {users.map(user => (
+              <div 
+                key={user.idusuarios}
+                style={{
+                  ...modalStyle.userItem,
+                  borderColor: '#dc3545'
+                }}
+                onClick={() => selectUserForDelete(user)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#404040';
+                  e.currentTarget.style.transform = 'translateX(5px)';
+                  e.currentTarget.style.borderColor = '#ff4444';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#333';
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.borderColor = '#dc3545';
+                }}
+              >
+                <div style={modalStyle.userInfo}>
+                  <h3 style={modalStyle.userTitle}>{user.nome}</h3>
+                  <div style={modalStyle.userDetails}>
+                    <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>Telefone:</strong>
+                      {user.telefone}
+                    </p>
+                    <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>CPF:</strong>
+                      {user.cpf}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {selectedUser && (
+        <div 
+          className={`modal-overlay ${isDeleteModalOpen ? 'visible' : ''}`} 
+          style={{
+            ...modalStyle.overlay, 
+            display: isDeleteModalOpen ? 'flex' : 'none'
+          }}
+        >
+          <div style={modalStyle.modal}>
+            <div style={modalStyle.header}>
+              <h2 style={modalStyle.title}>Confirmar Exclusão</h2>
+              <button 
+                style={modalStyle.closeButton}
+                onClick={() => {
+                  setIsDeleteModalOpen(false);
+                  setSelectedUser(null);
+                }}
+                onMouseOver={(e) => e.target.style.color = '#ff8c00'}
+                onMouseOut={(e) => e.target.style.color = '#fff'}
+              >
+                ×
+              </button>
+            </div>
+            <div style={modalStyle.confirmContent}>
+              <p style={modalStyle.confirmText}>
+                Tem certeza que deseja excluir o usuário {selectedUser.nome}?
+              </p>
+              <div style={modalStyle.buttonGroup}>
+                <button
+                  type="button"
+                  style={{...modalStyle.button, ...modalStyle.cancelButton}}
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                    setSelectedUser(null);
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#505050'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#404040'}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  style={{...modalStyle.button, backgroundColor: '#ff4444', color: '#fff'}}
+                  onClick={handleDeleteUser}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#ff6666'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#ff4444'}
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </Box>
+  );
+};
+
+export default UserManagement; 

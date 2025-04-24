@@ -1,0 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+html, body {
+    background-color: #000 !important;
+    color: #fff;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#root {
+    background-color: #000;
+    min-height: 100vh;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    color: #fff;
+    font-size: 2.5em;
+}
+
+.container {
+    min-height: 100vh;
+    background-color: #000000;
+    padding: 2rem;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #1E1E1E;
+    border-radius: 8px;
+    padding: 2rem;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.card:hover {
+    background-color: #2D2D2D;
+    border-color: #ff8c00;
+    transform: translateY(-4px);
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+}
+
+.card-content h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #ff8c00;
+}
+
+.card-content p {
+    color: #fff;
+    margin: 10px 0;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.card-content strong {
+    font-weight: 500;
+    margin-right: 5px;
+}
+
+.usuario-item {
+    background-color: #2D2D2D;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.usuario-item:hover {
+    border-color: #ff8c00;
+    transform: translateY(-2px);
+}
+
+.usuario-item h3 {
+    margin: 0 0 0.5rem 0;
+    color: #ff8c00;
+}
+
+.usuario-item p {
+    margin: 0.25rem 0;
+    color: #fff;
+}
+
+.usuario-item strong {
+    color: #888;
+}
+
+.usuario-content {
+    flex: 1;
+}
+
+.actions-container {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.btn-edit, .btn-delete {
+    background-color: #ff8c00;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    background-color: #ffa500;
+}
+
+.btn-add {
+    background-color: #ff8c00;
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add:hover {
+    background-color: #ffa500;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ff8c00;
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.modal-content h2 {
+    color: #ff8c00;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close:hover {
+    color: #ff8c00;
+}
+
+/* Estilos da página de detalhes */
+.details-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    padding: 20px;
+}
+
+.details-container {
+    background-color: #1a1a1a;
+    padding: 40px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.details-container h2 {
+    color: #fff;
+    font-size: 1.8em;
+    margin-bottom: 30px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.details-content {
+    margin-bottom: 30px;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 1em;
+    width: 120px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    color: #fff;
+    font-size: 1em;
+    flex: 1;
+    padding-left: 10px;
+}
+
+.btn-voltar {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.btn-voltar:hover {
+    background: #fff;
+    color: #000;
+}
+
+.error-message {
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    text-align: center;
+}
+
+.error-message button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.error-message button:hover {
+    background-color: #b91c1c;
+}
+
+.loading-message,
+.info-message {
+    text-align: center;
+    padding: 40px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.loading-message h2,
+.info-message h2 {
+    color: #ff8c00;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.info-message {
+    border: 1px solid #333;
+}
+
+/* Estilos para os modais de seleção */
+.modal-select {
+    background-color: #1E1E1E !important;
+    color: white !important;
+    max-width: 800px !important;
+    width: 100% !important;
+}
+
+.modal-select h2 {
+    color: #ff8c00;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+/* Botões de cancelar e confirmar */
+.btn-cancel {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-confirm {
+    background-color: #ff8c00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #444;
+}
+
+.btn-confirm:hover {
+    background-color: #ff7000;
+}
+
+/* Estilização dos inputs */
+.MuiTextField-root {
+    margin-bottom: 1rem;
+}
+
+.MuiInputLabel-root {
+    color: #888 !important;
+}
+
+.MuiOutlinedInput-root {
+    color: white !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+    border-color: #333 !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #444 !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #ff8c00 !important;
+}
+
+/* Estilização do Dialog Actions */
+.MuiDialogActions-root {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #333;
+}
+
+/* Estilos para visibilidade do modal */
+.visible {
+  display: flex !important;
+}
+
+/* Ajuste para o overlay do modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay.visible {
+  display: flex !important;
+} 

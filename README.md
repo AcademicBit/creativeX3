@@ -74,25 +74,31 @@ O frontend estará disponível em `http://localhost:5173`
    - Lista de usuários cadastrados
    - Botões para adicionar, editar e excluir usuários
 
-2. **Modal de Cadastro**
+2. **Tela de Eventos**
+   - Três botões para executar, na respectiva ordem, os métodos de CREATE, PUT e DELETE da API
+
+3. **Modal de Cadastro**
    - Formulário para adicionar novo usuário
    - Campos: Nome, Trabalho, Telefone e Cidade
    - Validação de campos obrigatórios
    - Mensagens de erro em laranja
 
-3. **Modal de Edição**
+4. **Modal de Edição**
    - Formulário pré-preenchido com dados do usuário
    - Mesmos campos do cadastro
    - Validação de campos obrigatórios
    - Mensagens de erro em laranja
 
-4. **Modal de Exclusão**
+5. **Modal de Exclusão**
    - Confirmação de exclusão do usuário
    - Lista de usuários para seleção
 
-5. **Tela de Detalhes**
+6. **Tela de Detalhes**
    - Visualização detalhada dos dados do usuário
    - Botão para voltar à lista principal
+  
+7. **Tela de About it**
+   - Informações sobre o desenvolvedor do projeto
 
 ## Funcionalidades
 

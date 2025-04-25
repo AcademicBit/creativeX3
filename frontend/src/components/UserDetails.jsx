@@ -40,7 +40,7 @@ const UserDetails = () => {
             <div className="user-details-card">
                 <div className="user-header">
                     <h1>Detalhes do Usuário</h1>
-                    <span className="user-id">ID: {user.idusuarios}</span>
+                    <span className="user-id">ID: {user.id}</span>
                 </div>
                 
                 <div className="user-content">
@@ -50,13 +50,18 @@ const UserDetails = () => {
                     </div>
                     
                     <div className="info-group">
-                        <label>CPF</label>
-                        <div className="info-value">{user.cpf || 'Não informado'}</div>
+                        <label>Trabalho</label>
+                        <div className="info-value">{user.trabalho || 'Não informado'}</div>
                     </div>
                     
                     <div className="info-group">
                         <label>Telefone</label>
                         <div className="info-value">{user.telefone || 'Não informado'}</div>
+                    </div>
+
+                    <div className="info-group">
+                        <label>Cidade</label>
+                        <div className="info-value">{user.cidade || 'Não informado'}</div>
                     </div>
                 </div>
 

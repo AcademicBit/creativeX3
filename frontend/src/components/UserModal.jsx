@@ -5,19 +5,25 @@ import '../styles/styles.css';
 const UserModal = ({ open, handleClose, user, type, onSuccess }) => {
     const [formData, setFormData] = useState({
         nome: '',
-        email: ''
+        trabalho: '',
+        telefone: '',
+        cidade: ''
     });
 
     useEffect(() => {
         if (user) {
             setFormData({
                 nome: user.nome || '',
-                email: user.email || ''
+                trabalho: user.trabalho || '',
+                telefone: user.telefone || '',
+                cidade: user.cidade || ''
             });
         } else {
             setFormData({
                 nome: '',
-                email: ''
+                trabalho: '',
+                telefone: '',
+                cidade: ''
             });
         }
     }, [user]);
@@ -34,9 +40,9 @@ const UserModal = ({ open, handleClose, user, type, onSuccess }) => {
         e.preventDefault();
         try {
             if (type === 'create') {
-                await axios.post('http://localhost:8800/api/usuarios', formData);
+                await axios.post('http://localhost:8800/usuarios', formData);
             } else {
-                await axios.put(`http://localhost:8800/api/usuarios/${user.id}`, formData);
+                await axios.put(`http://localhost:8800/usuarios/${user.id}`, formData);
             }
             handleClose();
             onSuccess();
@@ -175,12 +181,40 @@ const UserModal = ({ open, handleClose, user, type, onSuccess }) => {
                     </div>
                     
                     <div style={modalStyle.formGroup}>
-                        <label style={modalStyle.label}>Email:</label>
+                        <label style={modalStyle.label}>Trabalho:</label>
                         <input
                             style={modalStyle.input}
-                            type="email"
-                            name="email"
-                            value={formData.email}
+                            type="text"
+                            name="trabalho"
+                            value={formData.trabalho}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                            onBlur={(e) => e.target.style.borderColor = '#444'}
+                        />
+                    </div>
+
+                    <div style={modalStyle.formGroup}>
+                        <label style={modalStyle.label}>Telefone:</label>
+                        <input
+                            style={modalStyle.input}
+                            type="text"
+                            name="telefone"
+                            value={formData.telefone}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                            onBlur={(e) => e.target.style.borderColor = '#444'}
+                        />
+                    </div>
+
+                    <div style={modalStyle.formGroup}>
+                        <label style={modalStyle.label}>Cidade:</label>
+                        <input
+                            style={modalStyle.input}
+                            type="text"
+                            name="cidade"
+                            value={formData.cidade}
                             onChange={handleChange}
                             required
                             onFocus={(e) => e.target.style.borderColor = '#ff8c00'}

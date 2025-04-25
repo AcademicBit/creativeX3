@@ -17,8 +17,9 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
+    trabalho: '',
     telefone: '',
-    cpf: ''
+    cidade: ''
   });
 
   useEffect(() => {
@@ -49,8 +50,9 @@ const UserManagement = () => {
       setIsCreateModalOpen(false);
       setFormData({
         nome: '',
+        trabalho: '',
         telefone: '',
-        cpf: ''
+        cidade: ''
       });
       fetchUsers();
     } catch (error) {
@@ -60,18 +62,19 @@ const UserManagement = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    if (!selectedUser?.idusuarios) {
+    if (!selectedUser?.id) {
       console.error('ID do usuário não encontrado');
       return;
     }
     try {
-      await axios.put(`http://localhost:8800/usuarios/${selectedUser.idusuarios}`, formData);
+      await axios.put(`http://localhost:8800/usuarios/${selectedUser.id}`, formData);
       setIsUpdateModalOpen(false);
       setSelectedUser(null);
       setFormData({
         nome: '',
+        trabalho: '',
         telefone: '',
-        cpf: ''
+        cidade: ''
       });
       fetchUsers();
     } catch (error) {
@@ -80,12 +83,12 @@ const UserManagement = () => {
   };
 
   const handleDeleteUser = async () => {
-    if (!selectedUser?.idusuarios) {
+    if (!selectedUser?.id) {
       console.error('ID do usuário não encontrado');
       return;
     }
     try {
-      await axios.delete(`http://localhost:8800/usuarios/${selectedUser.idusuarios}`);
+      await axios.delete(`http://localhost:8800/usuarios/${selectedUser.id}`);
       setIsDeleteModalOpen(false);
       setSelectedUser(null);
       fetchUsers();
@@ -95,21 +98,22 @@ const UserManagement = () => {
   };
 
   const selectUserForUpdate = (user) => {
-    if (!user?.idusuarios) {
+    if (!user?.id) {
       console.error('ID do usuário não encontrado');
       return;
     }
     setSelectedUser(user);
     setFormData({
       nome: user.nome || '',
+      trabalho: user.trabalho || '',
       telefone: user.telefone || '',
-      cpf: user.cpf || ''
+      cidade: user.cidade || ''
     });
     setIsUpdateModalOpen(true);
   };
 
   const selectUserForDelete = (user) => {
-    if (!user?.idusuarios) {
+    if (!user?.id) {
       console.error('ID do usuário não encontrado');
       return;
     }
@@ -364,6 +368,19 @@ const UserManagement = () => {
               />
             </div>
             <div style={modalStyle.formGroup}>
+              <label style={modalStyle.label}>Trabalho:</label>
+              <input
+                style={modalStyle.input}
+                type="text"
+                name="trabalho"
+                value={formData.trabalho}
+                onChange={handleInputChange}
+                required
+                onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                onBlur={(e) => e.target.style.borderColor = '#444'}
+              />
+            </div>
+            <div style={modalStyle.formGroup}>
               <label style={modalStyle.label}>Telefone:</label>
               <input
                 style={modalStyle.input}
@@ -377,12 +394,12 @@ const UserManagement = () => {
               />
             </div>
             <div style={modalStyle.formGroup}>
-              <label style={modalStyle.label}>CPF:</label>
+              <label style={modalStyle.label}>Cidade:</label>
               <input
                 style={modalStyle.input}
                 type="text"
-                name="cpf"
-                value={formData.cpf}
+                name="cidade"
+                value={formData.cidade}
                 onChange={handleInputChange}
                 required
                 onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
@@ -435,7 +452,7 @@ const UserManagement = () => {
           <div style={modalStyle.userList}>
             {users.map(user => (
               <div 
-                key={user.idusuarios}
+                key={user.id}
                 style={modalStyle.userItem}
                 onClick={() => selectUserForUpdate(user)}
                 onMouseEnter={(e) => {
@@ -453,12 +470,16 @@ const UserManagement = () => {
                   <h3 style={modalStyle.userTitle}>{user.nome}</h3>
                   <div style={modalStyle.userDetails}>
                     <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>Trabalho:</strong>
+                      {user.trabalho}
+                    </p>
+                    <p style={modalStyle.userDetail}>
                       <strong style={modalStyle.userLabel}>Telefone:</strong>
                       {user.telefone}
                     </p>
                     <p style={modalStyle.userDetail}>
-                      <strong style={modalStyle.userLabel}>CPF:</strong>
-                      {user.cpf}
+                      <strong style={modalStyle.userLabel}>Cidade:</strong>
+                      {user.cidade}
                     </p>
                   </div>
                 </div>
@@ -507,6 +528,19 @@ const UserManagement = () => {
                 />
               </div>
               <div style={modalStyle.formGroup}>
+                <label style={modalStyle.label}>Trabalho:</label>
+                <input
+                  style={modalStyle.input}
+                  type="text"
+                  name="trabalho"
+                  value={formData.trabalho}
+                  onChange={handleInputChange}
+                  required
+                  onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
+                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                />
+              </div>
+              <div style={modalStyle.formGroup}>
                 <label style={modalStyle.label}>Telefone:</label>
                 <input
                   style={modalStyle.input}
@@ -520,12 +554,12 @@ const UserManagement = () => {
                 />
               </div>
               <div style={modalStyle.formGroup}>
-                <label style={modalStyle.label}>CPF:</label>
+                <label style={modalStyle.label}>Cidade:</label>
                 <input
                   style={modalStyle.input}
                   type="text"
-                  name="cpf"
-                  value={formData.cpf}
+                  name="cidade"
+                  value={formData.cidade}
                   onChange={handleInputChange}
                   required
                   onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
@@ -582,7 +616,7 @@ const UserManagement = () => {
           <div style={modalStyle.userList}>
             {users.map(user => (
               <div 
-                key={user.idusuarios}
+                key={user.id}
                 style={{
                   ...modalStyle.userItem,
                   borderColor: '#dc3545'
@@ -603,12 +637,16 @@ const UserManagement = () => {
                   <h3 style={modalStyle.userTitle}>{user.nome}</h3>
                   <div style={modalStyle.userDetails}>
                     <p style={modalStyle.userDetail}>
+                      <strong style={modalStyle.userLabel}>Trabalho:</strong>
+                      {user.trabalho}
+                    </p>
+                    <p style={modalStyle.userDetail}>
                       <strong style={modalStyle.userLabel}>Telefone:</strong>
                       {user.telefone}
                     </p>
                     <p style={modalStyle.userDetail}>
-                      <strong style={modalStyle.userLabel}>CPF:</strong>
-                      {user.cpf}
+                      <strong style={modalStyle.userLabel}>Cidade:</strong>
+                      {user.cidade}
                     </p>
                   </div>
                 </div>

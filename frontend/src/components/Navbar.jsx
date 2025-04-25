@@ -9,7 +9,7 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="nav-container">
                 <div className="nav-content">
-                    <Link to="/" className="logo">StackGreek</Link>
+                    <h1 to="/" className="logo">StackGreek</h1>
                     <div className="nav-links">
                         <Link 
                             to="/" 

@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import UserList from './components/UserList';
 import UserDetails from './components/UserDetails';
 import UserManagement from './components/UserManagement';
+import AboutIt from './components/AboutIt';
 import './styles/styles.css';
 
 const theme = createTheme({
@@ -85,14 +86,15 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Navbar />
-        <div style={{ paddingTop: '64px' }}>
+        <div style={{ backgroundColor: '#000', minHeight: '100vh' }}>
+          <Navbar />
           <Routes>
             <Route path="/" element={<UserList />} />
             <Route path="/usuarios" element={<UserManagement />} />
             <Route path="/eventos" element={<div>Página de Eventos</div>} />
             <Route path="/usuario/:id" element={<UserDetails />} />
             <Route path="/usuarios/:id" element={<UserDetails />} />
+            <Route path="/about" element={<AboutIt />} />
           </Routes>
         </div>
       </Router>

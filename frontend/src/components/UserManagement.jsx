@@ -21,6 +21,12 @@ const UserManagement = () => {
     telefone: '',
     cidade: ''
   });
+  const [errors, setErrors] = useState({
+    nome: '',
+    trabalho: '',
+    telefone: '',
+    cidade: ''
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -35,16 +41,62 @@ const UserManagement = () => {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    // Validação do nome
+    if (!formData.nome) {
+      newErrors.nome = 'Por favor, preencha o nome';
+      isValid = false;
+    } else if (formData.nome.length < 3) {
+      newErrors.nome = 'O nome deve ter pelo menos 3 caracteres';
+      isValid = false;
+    }
+
+    // Validação do trabalho
+    if (!formData.trabalho) {
+      newErrors.trabalho = 'Por favor, preencha o trabalho';
+      isValid = false;
+    }
+
+    // Validação do telefone
+    const phoneRegex = /^\(?[1-9]{2}\)? ?(?:[2-8]|9[1-9])[0-9]{3}-[0-9]{4}$/;
+    if (!formData.telefone) {
+      newErrors.telefone = 'Por favor, preencha o telefone';
+      isValid = false;
+    } else if (!phoneRegex.test(formData.telefone)) {
+      newErrors.telefone = 'Digite um telefone válido (ex: 11999999999)';
+      isValid = false;
+    }
+
+    // Validação da cidade
+    if (!formData.cidade) {
+      newErrors.cidade = 'Por favor, preencha a cidade';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    // Limpa o erro do campo quando o usuário começa a digitar
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
   };
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+    
     try {
       await axios.post('http://localhost:8800/usuarios', formData);
       setIsCreateModalOpen(false);
@@ -62,6 +114,8 @@ const UserManagement = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+    
     if (!selectedUser?.id) {
       console.error('ID do usuário não encontrado');
       return;
@@ -284,6 +338,12 @@ const UserManagement = () => {
     }
   };
 
+  const errorMessageStyle = {
+    color: '#ff8c00',
+    fontSize: '0.8em',
+    marginTop: '4px'
+  };
+
   return (
     <Box 
       sx={{
@@ -308,7 +368,15 @@ const UserManagement = () => {
         }}
       >
         <Grid item>
-          <div className="card" onClick={() => setIsCreateModalOpen(true)} style={{ width: '240px', height: '240px' }}>
+          <div className="card" onClick={() => {
+            setIsCreateModalOpen(true);
+            setFormData({
+              nome: '',
+              trabalho: '',
+              telefone: '',
+              cidade: ''
+            });
+          }} style={{ width: '240px', height: '240px' }}>
             <div className="card-content">
               <h3>Cadastrar</h3>
               <AddIcon sx={{ fontSize: 50, color: '#ff8c00', marginTop: '20px' }} />
@@ -346,7 +414,15 @@ const UserManagement = () => {
             <h2 style={modalStyle.title}>Cadastrar Novo Usuário</h2>
             <button 
               style={modalStyle.closeButton}
-              onClick={() => setIsCreateModalOpen(false)}
+              onClick={() => {
+                setIsCreateModalOpen(false);
+                setFormData({
+                  nome: '',
+                  trabalho: '',
+                  telefone: '',
+                  cidade: ''
+                });
+              }}
               onMouseOver={(e) => e.target.style.color = '#ff8c00'}
               onMouseOut={(e) => e.target.style.color = '#fff'}
             >
@@ -357,54 +433,66 @@ const UserManagement = () => {
             <div style={modalStyle.formGroup}>
               <label style={modalStyle.label}>Nome:</label>
               <input
-                style={modalStyle.input}
+                style={{
+                  ...modalStyle.input,
+                  borderColor: errors.nome ? '#ff8c00' : '#444'
+                }}
                 type="text"
                 name="nome"
                 value={formData.nome}
                 onChange={handleInputChange}
-                required
                 onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                onBlur={(e) => e.target.style.borderColor = '#444'}
+                onBlur={(e) => e.target.style.borderColor = errors.nome ? '#ff8c00' : '#444'}
               />
+              {errors.nome && <span style={errorMessageStyle}>{errors.nome}</span>}
             </div>
             <div style={modalStyle.formGroup}>
               <label style={modalStyle.label}>Trabalho:</label>
               <input
-                style={modalStyle.input}
+                style={{
+                  ...modalStyle.input,
+                  borderColor: errors.trabalho ? '#ff8c00' : '#444'
+                }}
                 type="text"
                 name="trabalho"
                 value={formData.trabalho}
                 onChange={handleInputChange}
-                required
                 onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                onBlur={(e) => e.target.style.borderColor = '#444'}
+                onBlur={(e) => e.target.style.borderColor = errors.trabalho ? '#ff8c00' : '#444'}
               />
+              {errors.trabalho && <span style={errorMessageStyle}>{errors.trabalho}</span>}
             </div>
             <div style={modalStyle.formGroup}>
               <label style={modalStyle.label}>Telefone:</label>
               <input
-                style={modalStyle.input}
+                style={{
+                  ...modalStyle.input,
+                  borderColor: errors.telefone ? '#ff8c00' : '#444'
+                }}
                 type="text"
                 name="telefone"
                 value={formData.telefone}
                 onChange={handleInputChange}
-                required
                 onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                onBlur={(e) => e.target.style.borderColor = '#444'}
+                onBlur={(e) => e.target.style.borderColor = errors.telefone ? '#ff8c00' : '#444'}
               />
+              {errors.telefone && <span style={errorMessageStyle}>{errors.telefone}</span>}
             </div>
             <div style={modalStyle.formGroup}>
               <label style={modalStyle.label}>Cidade:</label>
               <input
-                style={modalStyle.input}
+                style={{
+                  ...modalStyle.input,
+                  borderColor: errors.cidade ? '#ff8c00' : '#444'
+                }}
                 type="text"
                 name="cidade"
                 value={formData.cidade}
                 onChange={handleInputChange}
-                required
                 onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                onBlur={(e) => e.target.style.borderColor = '#444'}
+                onBlur={(e) => e.target.style.borderColor = errors.cidade ? '#ff8c00' : '#444'}
               />
+              {errors.cidade && <span style={errorMessageStyle}>{errors.cidade}</span>}
             </div>
             <div style={modalStyle.buttonGroup}>
               <button
@@ -506,6 +594,12 @@ const UserManagement = () => {
                 onClick={() => {
                   setIsUpdateModalOpen(false);
                   setSelectedUser(null);
+                  setFormData({
+                    nome: '',
+                    trabalho: '',
+                    telefone: '',
+                    cidade: ''
+                  });
                 }}
                 onMouseOver={(e) => e.target.style.color = '#ff8c00'}
                 onMouseOut={(e) => e.target.style.color = '#fff'}
@@ -517,54 +611,66 @@ const UserManagement = () => {
               <div style={modalStyle.formGroup}>
                 <label style={modalStyle.label}>Nome:</label>
                 <input
-                  style={modalStyle.input}
+                  style={{
+                    ...modalStyle.input,
+                    borderColor: errors.nome ? '#ff8c00' : '#444'
+                  }}
                   type="text"
                   name="nome"
                   value={formData.nome}
                   onChange={handleInputChange}
-                  required
                   onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                  onBlur={(e) => e.target.style.borderColor = errors.nome ? '#ff8c00' : '#444'}
                 />
+                {errors.nome && <span style={errorMessageStyle}>{errors.nome}</span>}
               </div>
               <div style={modalStyle.formGroup}>
                 <label style={modalStyle.label}>Trabalho:</label>
                 <input
-                  style={modalStyle.input}
+                  style={{
+                    ...modalStyle.input,
+                    borderColor: errors.trabalho ? '#ff8c00' : '#444'
+                  }}
                   type="text"
                   name="trabalho"
                   value={formData.trabalho}
                   onChange={handleInputChange}
-                  required
                   onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                  onBlur={(e) => e.target.style.borderColor = errors.trabalho ? '#ff8c00' : '#444'}
                 />
+                {errors.trabalho && <span style={errorMessageStyle}>{errors.trabalho}</span>}
               </div>
               <div style={modalStyle.formGroup}>
                 <label style={modalStyle.label}>Telefone:</label>
                 <input
-                  style={modalStyle.input}
+                  style={{
+                    ...modalStyle.input,
+                    borderColor: errors.telefone ? '#ff8c00' : '#444'
+                  }}
                   type="text"
                   name="telefone"
                   value={formData.telefone}
                   onChange={handleInputChange}
-                  required
                   onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                  onBlur={(e) => e.target.style.borderColor = errors.telefone ? '#ff8c00' : '#444'}
                 />
+                {errors.telefone && <span style={errorMessageStyle}>{errors.telefone}</span>}
               </div>
               <div style={modalStyle.formGroup}>
                 <label style={modalStyle.label}>Cidade:</label>
                 <input
-                  style={modalStyle.input}
+                  style={{
+                    ...modalStyle.input,
+                    borderColor: errors.cidade ? '#ff8c00' : '#444'
+                  }}
                   type="text"
                   name="cidade"
                   value={formData.cidade}
                   onChange={handleInputChange}
-                  required
                   onFocus={(e) => e.target.style.borderColor = '#ff8c00'}
-                  onBlur={(e) => e.target.style.borderColor = '#444'}
+                  onBlur={(e) => e.target.style.borderColor = errors.cidade ? '#ff8c00' : '#444'}
                 />
+                {errors.cidade && <span style={errorMessageStyle}>{errors.cidade}</span>}
               </div>
               <div style={modalStyle.buttonGroup}>
                 <button

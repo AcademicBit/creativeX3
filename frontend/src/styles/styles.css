@@ -301,9 +301,9 @@ html, body {
     padding: 20px;
     margin: 20px;
     border-radius: 8px;
-    background-color: #fee2e2;
-    border: 1px solid #ef4444;
-    color: #991b1b;
+    background-color: #fff3e0;
+    border: 1px solid #ff8c00;
+    color: #ff8c00;
     text-align: center;
 }
 
@@ -311,7 +311,7 @@ html, body {
     margin-top: 10px;
     padding: 8px 16px;
     border-radius: 4px;
-    background-color: #dc2626;
+    background-color: #ff8c00;
     color: white;
     border: none;
     cursor: pointer;
@@ -319,7 +319,7 @@ html, body {
 }
 
 .error-message button:hover {
-    background-color: #b91c1c;
+    background-color: #ff7000;
 }
 
 .loading-message,

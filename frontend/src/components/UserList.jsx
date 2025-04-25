@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getUsers } from '../controllers';
 import '../styles/UserList.css';
 
 const UserList = () => {
@@ -13,9 +13,9 @@ const UserList = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:8800/usuarios');
-            console.log('Dados recebidos:', response.data);
-            setUsers(response.data);
+            const usersData = await getUsers();
+            console.log('Dados recebidos:', usersData);
+            setUsers(usersData);
         } catch (error) {
             console.error('Erro ao carregar usuários:', error);
         }

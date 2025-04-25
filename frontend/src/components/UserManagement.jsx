@@ -6,7 +6,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import { getUsers, createUser, updateUser, deleteUser } from '../controllers';
 import '../styles/styles.css';
 
 const UserManagement = () => {
@@ -34,8 +34,8 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8800/usuarios');
-      setUsers(response.data);
+      const usersData = await getUsers();
+      setUsers(usersData);
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
     }
@@ -98,7 +98,7 @@ const UserManagement = () => {
     if (!validateForm()) return;
     
     try {
-      await axios.post('http://localhost:8800/usuarios', formData);
+      await createUser(formData);
       setIsCreateModalOpen(false);
       setFormData({
         nome: '',
@@ -121,7 +121,7 @@ const UserManagement = () => {
       return;
     }
     try {
-      await axios.put(`http://localhost:8800/usuarios/${selectedUser.id}`, formData);
+      await updateUser(selectedUser.id, formData);
       setIsUpdateModalOpen(false);
       setSelectedUser(null);
       setFormData({
@@ -142,7 +142,7 @@ const UserManagement = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:8800/usuarios/${selectedUser.id}`);
+      await deleteUser(selectedUser.id);
       setIsDeleteModalOpen(false);
       setSelectedUser(null);
       fetchUsers();

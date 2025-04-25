@@ -11,24 +11,9 @@ const Navbar = () => {
                 <div className="nav-content">
                     <h1 to="/" className="logo">StackGreek</h1>
                     <div className="nav-links">
-                        <Link 
-                            to="/" 
-                            className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                        >
-                            Home
-                        </Link>
-                        <Link 
-                            to="/usuarios" 
-                            className={`nav-link ${location.pathname === '/usuarios' ? 'active' : ''}`}
-                        >
-                            Usuários
-                        </Link>
-                        <Link 
-                            to="/about" 
-                            className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
-                        >
-                            About it
-                        </Link>
+                        <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>Home</Link>
+                        <Link to="/usuarios" className={`nav-link ${location.pathname === '/usuarios' ? 'active' : ''}`}> Usuários </Link>
+                        <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} > About it </Link>
                     </div>
                 </div>
             </div>

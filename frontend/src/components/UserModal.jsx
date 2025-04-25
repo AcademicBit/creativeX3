@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { createUser, updateUser } from '../controllers';
 import '../styles/styles.css';
 
 const UserModal = ({ open, handleClose, user, type, onSuccess }) => {
@@ -40,9 +40,9 @@ const UserModal = ({ open, handleClose, user, type, onSuccess }) => {
         e.preventDefault();
         try {
             if (type === 'create') {
-                await axios.post('http://localhost:8800/usuarios', formData);
+                await createUser(formData);
             } else {
-                await axios.put(`http://localhost:8800/usuarios/${user.id}`, formData);
+                await updateUser(user.id, formData);
             }
             handleClose();
             onSuccess();

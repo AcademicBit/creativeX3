@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getUserById } from '../controllers';
 import '../styles/UserDetails.css';
 
 const UserDetails = () => {
@@ -13,11 +13,11 @@ const UserDetails = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8800/usuarios/${id}`);
-                console.log('Dados do usuário:', response.data);
+                const userData = await getUserById(id);
+                console.log('Dados do usuário:', userData);
                 
-                if (response.data && response.data.success && response.data.user) {
-                    setUser(response.data.user);
+                if (userData && userData.success && userData.user) {
+                    setUser(userData.user);
                 } else {
                     setError('Usuário não encontrado');
                 }
